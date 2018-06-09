@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static eu.hadesz.test.c24uno.service.CardFactory.create;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -105,5 +106,27 @@ public class PlayableCardsServiceTest {
         // THEN
         assertThat(results.size(), is(1));
         assertThat(results, containsInAnyOrder(card1));
+    }
+
+    @Test
+    public void testBestOption() {
+        // GIVEN
+        Card card1 = create(Action.DRAW_2, Color.YELLOW);
+        Card card2 = create(Action.DRAW_4, Color.WILD);
+        List<Card> cards = Arrays.asList(
+                create(Color.BLUE, 10),
+                create(Color.RED, 3),
+                card1,
+                card2,
+                create(Color.BLUE, 4)
+        );
+
+        // WHEN
+        Optional<Card> optionalCard = underTest.bestOption(cards, create(Action.DRAW_2, Color.GREEN));
+
+        // THEN
+        assertTrue(optionalCard.isPresent());
+        assertThat(optionalCard.get(), is(card2));
+
     }
 }
